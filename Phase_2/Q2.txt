@@ -1,0 +1,109 @@
+.data
+arr: .word 0x1fer1000
+arr1: .byte 34 1 21   3
+size: .word 4 6
+s: .word   3
+e: .word 455
+.text
+lw x3 arr
+li x5 0
+la x17  arr1
+lw x4 size
+loap:beq x5 x4 exr
+slli x16 x5 2
+add x16 x16 x17
+lw x9 0(x16)
+sub x16 x16 x17
+add x16 x16 x3
+sw x9 0(x16)
+addi x5 x5 1
+ j loap
+exr:
+jal x1 sort 
+lw x11 s
+lw x4 size
+addi x4 x4 -1
+li x5 0
+li x20 -1
+lw x3 arr
+jal x1 search 
+li x21 -1
+beq x20 x21 xx
+j final
+xx:li x10 -1
+j final
+
+sort:
+li x5 0
+li x6 0
+addi x4 x4 -1
+for1: bge x5  x4   exi
+li x7 0
+sub x8 x4 x5 
+for2:bge x7 x8 exi1
+slli x9 x7 2
+add x9 x9 x3
+lw x10 0(x9)
+lw x11 4(x9)
+blt x11 x10 swap
+j lop
+swap:
+add x12 x0 x11
+add x11 x0 x10
+add x10 x0 x12
+sw x10 0(x9)
+sw x11 4(x9)
+lop:
+addi x7 x7 1
+j for2
+exi1:
+addi x5 x5 1
+j for1
+exi:  jalr x0 0(x1)
+
+
+
+
+search: 
+bge  x5 x4  ret1
+j jump
+ret1:
+slli x7 x5 2
+add x7 x7 x3
+ lw x6 0(x7)
+ beq x6 x11  ll
+ j kk
+ ll:add  x10 x0 x7
+ 	li x20 1
+    kk:
+     jalr x0 0(x1)
+jump:
+add x8 x5 x4
+li x7 2
+div x8 x8 x7
+slli x9 x8 2
+add x9 x9 x3
+lw x12 0(x9)
+beq x12 x11 exit23
+blt x11 x12 less
+more:sw x1 0(sp)
+	addi sp sp 4
+    addi x8 x8 +1
+    add x5 x0 x8
+    j search
+    addi sp sp -4
+    lw x1 0(sp)
+    jalr x0 0(x1)
+less:sw x1 0(sp)
+	addi sp sp 4
+    addi x8 x8 -1
+    add x4 x0 x8
+    j search
+    addi sp sp -4
+    lw x1 0(sp)
+    jalr x0 0(x1)
+    
+exit23:add  x10 x0 x9
+		li x20 1
+        jalr x0 0(x1)
+final:

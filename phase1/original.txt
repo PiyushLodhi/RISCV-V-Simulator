@@ -1,0 +1,30 @@
+main:
+addi x5,x0,14
+addi x6,x0,1
+jal x1,fib
+jal x0 exit
+
+
+fib:
+blt x6,x5,rec
+addi x7,x5,0
+jalr x0,0(x1)
+
+rec:
+addi x2,x2,-12
+sw x1,0(x2)
+sw x5,4(x2)
+addi x5,x5,-1
+jal x1,fib
+sw x7,8(x2)
+lw x5,4(x2)
+addi x5,x5,-2
+jal x1,fib
+lw x8,8(x2)
+add x7,x7,x8
+lw x1,0(x2)
+addi x2,x2,12
+jalr x0,0(x1)
+
+
+exit:
